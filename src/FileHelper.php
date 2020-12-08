@@ -2,6 +2,8 @@
 
 namespace Exteon;
 
+use InvalidArgumentException;
+
 abstract class FileHelper
 {
 
@@ -13,7 +15,7 @@ abstract class FileHelper
      *
      * @return bool Whether the operation was successful
      */
-    static function rmDir(string $dir, bool $includingDir = true) :bool
+    public static function rmDir(string $dir, bool $includingDir = true): bool
     {
         if (!file_exists($dir)) {
             return true;
@@ -58,7 +60,7 @@ abstract class FileHelper
      *
      * @return bool Whether the operation was successful
      */
-    static function copyDir(string $sourceDir, string $destDir) :bool
+    public static function copyDir(string $sourceDir, string $destDir): bool
     {
         if (!is_dir($sourceDir)) {
             return false;
@@ -104,7 +106,7 @@ abstract class FileHelper
      *
      * @return bool Whether the operation was successful
      */
-    static function preparePath(string $path, bool $excludeLast = false) :bool
+    public static function preparePath(string $path, bool $excludeLast = false): bool
     {
         $pieces = explode('/', $path);
         if ($pieces[0] == '') {
@@ -137,5 +139,57 @@ abstract class FileHelper
             }
         }
         return true;
+    }
+
+    public static function getDescendPath(string $path, string $descend): string
+    {
+        $pathFrags = explode('/', $path);
+        for ($i = 1; $i < count($pathFrags) - 1; $i++) {
+            if (!$pathFrags[$i]) {
+                throw new InvalidArgumentException('Invalid $path argument');
+            }
+        }
+        $descendFrags = explode('/', $descend);
+        if (!$descendFrags) {
+            throw new InvalidArgumentException('Invalid $descend argument');
+        }
+        for ($i = 0; $i < count($descendFrags) - 1; $i++) {
+            if (!$descendFrags[$i]) {
+                throw new InvalidArgumentException('Invalid $descend argument');
+            }
+        }
+        if (
+            $pathFrags &&
+            !end($pathFrags)
+        ) {
+            array_pop($pathFrags);
+        }
+        if (
+            $descendFrags &&
+            !end($descendFrags)
+        ) {
+            array_pop($descendFrags);
+        }
+        $frags = array_merge($pathFrags, $descendFrags);
+        return implode('/', $frags);
+    }
+
+    public static function getAscendPath(string $path, int $levels = 1): string
+    {
+        if ($levels < 1) {
+            throw new InvalidArgumentException('Invalid $levels argument');
+        }
+        $pathFrags = explode('/', $path);
+        if ($levels > count($pathFrags)) {
+            throw new InvalidArgumentException('$levels is too high for the $path');
+        }
+        $frags = array_slice($pathFrags, 0, count($pathFrags) - $levels);
+        return implode('/', $frags);
+    }
+
+    public static function getFileName(string $path): string
+    {
+        $info = pathinfo($path);
+        return $info['filename'];
     }
 }
