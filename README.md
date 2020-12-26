@@ -11,7 +11,6 @@ This is a library implementing common filesystem operations.
 ### Installing with `composer`
 
 ```shell script
-composer config repositories.exteon-file-helper vcs https://github.com/exteon/file-helper
 composer require exteon/file-helper
 ```
 
