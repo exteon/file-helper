@@ -85,7 +85,10 @@ abstract class FileHelper
                 $destPath = "$destDir/$file";
                 switch (filetype($sourcePath)) {
                     case 'dir':
-                        $result = $result && self::copyDir($sourcePath, $destPath);
+                        $result = $result && self::copyDir(
+                                $sourcePath,
+                                $destPath
+                            );
                         break;
                     case 'file':
                     case 'link':
@@ -106,8 +109,10 @@ abstract class FileHelper
      *
      * @return bool Whether the operation was successful
      */
-    public static function preparePath(string $path, bool $excludeLast = false): bool
-    {
+    public static function preparePath(
+        string $path,
+        bool $excludeLast = false
+    ): bool {
         $pieces = explode('/', $path);
         if ($pieces[0] == '') {
             $path = '/';
@@ -128,12 +133,18 @@ abstract class FileHelper
                 break;
             }
             if (!$pieces) {
-                return false;
+                if ($path) {
+                    return false;
+                }
+                break;
             }
             array_unshift($createTrail, array_pop($pieces));
         } while (true);
         foreach ($createTrail as $frag) {
-            $checkPath .= '/' . $frag;
+            if ($checkPath) {
+                $checkPath .= '/';
+            }
+            $checkPath .= $frag;
             if (!@mkdir($checkPath)) {
                 return false;
             }
@@ -181,7 +192,9 @@ abstract class FileHelper
         }
         $pathFrags = explode('/', $path);
         if ($levels > count($pathFrags)) {
-            throw new InvalidArgumentException('$levels is too high for the $path');
+            throw new InvalidArgumentException(
+                '$levels is too high for the $path'
+            );
         }
         $frags = array_slice($pathFrags, 0, count($pathFrags) - $levels);
         return implode('/', $frags);
