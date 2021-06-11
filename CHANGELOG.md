@@ -1,3 +1,9 @@
+## 1.2.0 +
+
+### New features
+
+* Added `getDescendants()` method
+
 ## 1.1.3
 
 ### Bugfixes
