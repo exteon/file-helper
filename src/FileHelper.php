@@ -2,7 +2,10 @@
 
     namespace Exteon;
 
+    use DirectoryIterator;
+    use Exception;
     use InvalidArgumentException;
+    use IteratorIterator;
     use RecursiveDirectoryIterator;
     use RecursiveIteratorIterator;
 
@@ -198,7 +201,7 @@
 
         public static function getDescendPath(
             string $path,
-            string $descend
+            string ...$descend
         ): string {
             $pathFrags = explode('/', $path);
             for ($i = 1; $i < count($pathFrags) - 1; $i++) {
@@ -208,10 +211,20 @@
                     );
                 }
             }
-            $descendFrags = explode('/', $descend);
-            if (!$descendFrags) {
-                throw new InvalidArgumentException('Invalid $descend argument');
-            }
+            $descendFrags = array_merge(
+                ...array_map(
+                       function ($path) {
+                           $descendFrags = explode('/', $path);
+                           if (!$descendFrags) {
+                               throw new InvalidArgumentException(
+                                   'Invalid $descend argument'
+                               );
+                           }
+                           return $descendFrags;
+                       },
+                       $descend
+                   )
+            );
             for ($i = 0; $i < count($descendFrags) - 1; $i++) {
                 if (!$descendFrags[$i]) {
                     throw new InvalidArgumentException(
@@ -233,5 +246,22 @@
             }
             $frags = array_merge($pathFrags, $descendFrags);
             return implode('/', $frags);
+        }
+
+        /**
+         * @param string $path
+         * @return string[]
+         */
+        public static function getChildren(string $path): array
+        {
+            $result = [];
+            $iterator = new DirectoryIterator($path);
+            foreach ($iterator as $file) {
+                $result[] = static::getDescendPath(
+                    $path,
+                    $file->getFilename()
+                );
+            }
+            return $result;
         }
     }

@@ -1,3 +1,10 @@
+## 1.3.0
+
+### New features
+
+* `getDescendPath()` now takes multiple descend parameters
+* Added `getChildren()` method
+
 ## 1.2.0
 
 ### New features
