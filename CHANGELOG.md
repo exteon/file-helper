@@ -1,19 +1,25 @@
+### 1.3.1
+
+#### Bugfixes
+
+* FileHelper::getChildren() should not return dotfiles
+
 ## 1.3.0
 
-### New features
+#### New features
 
 * `getDescendPath()` now takes multiple descend parameters
 * Added `getChildren()` method
 
 ## 1.2.0
 
-### New features
+#### New features
 
 * Added `getDescendants()` method
 
 ## 1.1.3
 
-### Bugfixes
+#### Bugfixes
 
 * Allow `preparePath('')` 
 

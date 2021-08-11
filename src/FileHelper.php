@@ -257,10 +257,12 @@
             $result = [];
             $iterator = new DirectoryIterator($path);
             foreach ($iterator as $file) {
-                $result[] = static::getDescendPath(
-                    $path,
-                    $file->getFilename()
-                );
+                if(!$file->isDot()){
+                    $result[] = static::getDescendPath(
+                        $path,
+                        $file->getFilename()
+                    );
+                }
             }
             return $result;
         }
