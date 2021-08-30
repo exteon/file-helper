@@ -11,6 +11,10 @@
 
     abstract class FileHelper
     {
+        public static function addTrailingSlash(string $path): string
+        {
+            return $path . (substr($path, -1) === '/' ? '' : '/');
+        }
 
         /**
          * Recursively deletes a directory
@@ -257,7 +261,7 @@
             $result = [];
             $iterator = new DirectoryIterator($path);
             foreach ($iterator as $file) {
-                if(!$file->isDot()){
+                if (!$file->isDot()) {
                     $result[] = static::getDescendPath(
                         $path,
                         $file->getFilename()

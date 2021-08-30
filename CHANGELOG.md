@@ -1,3 +1,9 @@
+## 1.4.0
+
+#### New features
+
+* Added `FileHelper::addTrailingSlash()`
+
 ### 1.3.1
 
 #### Bugfixes
