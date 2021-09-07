@@ -1,3 +1,9 @@
+## 1.5.0
+
+* Added `FileHelper::getRelativePath()`
+* Added `FileHelper::applyRelativePath()`
+* Added `FileHelper::normalizePath()`
+
 ## 1.4.0
 
 #### New features

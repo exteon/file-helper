@@ -5,7 +5,6 @@
     use DirectoryIterator;
     use Exception;
     use InvalidArgumentException;
-    use IteratorIterator;
     use RecursiveDirectoryIterator;
     use RecursiveIteratorIterator;
 
@@ -20,8 +19,8 @@
          * Recursively deletes a directory
          *
          * @param string $dir The directory to be deleted
-         * @param bool $includingDir Whether to deleted the directory referred to by $dir or only its contents
-         *
+         * @param bool $includingDir Whether to delete the directory referred to
+         *   by $dir or only its contents
          * @return bool Whether the operation was successful
          */
         public static function rmDir(
@@ -58,7 +57,7 @@
                 $includingDir &&
                 $result
             ) {
-                $result = ($result && @rmdir($dir));
+                $result = @rmdir($dir);
             }
             return $result;
         }
@@ -194,7 +193,7 @@
         {
             $result = [];
             $iterator = new RecursiveDirectoryIterator($path);
-            foreach (new RecursiveIteratorIterator($iterator) as $file) {
+            foreach (new RecursiveIteratorIterator($iterator) as $ignored) {
                 $result[] = static::getDescendPath(
                     $path,
                     $iterator->getSubPath()
@@ -269,5 +268,166 @@
                 }
             }
             return $result;
+        }
+
+        /**
+         * @throws Exception
+         */
+        public static function getRelativePath(
+            string $path,
+            string $basePath,
+            bool $allowTranscendentPaths = false
+        ): string {
+            $pathComponents = self::normalizePathArray(
+                explode('/', $path),
+                true
+            );
+            $basePathComponents = self::normalizePathArray(
+                explode('/', $basePath),
+                true
+            );
+            $pathComponentsCount = count($pathComponents);
+            $basePathComponentsCount = count($basePathComponents);
+
+            /** @noinspection PhpStatementHasEmptyBodyInspection */
+            for (
+                $commonLength = 0;
+                $commonLength < $pathComponentsCount &&
+                $commonLength < $basePathComponentsCount &&
+                $basePath[$commonLength] === $path[$commonLength];
+                $commonLength++
+            ) {
+            }
+
+            if (
+                !$commonLength &&
+                $pathComponentsCount &&
+                !$pathComponentsCount[0]
+            ) {
+                throw new Exception(
+                    'If path is rooted, basePath must also be rooted'
+                );
+            }
+
+            if (
+                !$allowTranscendentPaths &&
+                $commonLength < $basePathComponentsCount
+            ) {
+                throw new Exception('Base path is not a prefix of path');
+            }
+
+            $constructedPath = array_slice($pathComponents, $commonLength);
+            for ($i = 0; $i < $basePathComponentsCount - $commonLength; $i++) {
+                array_unshift($constructedPath, '..');
+            }
+
+            return implode('/', $constructedPath);
+        }
+
+        /**
+         * @param string[] $path
+         * @param bool $allowDotRelative
+         * @return string[]
+         * @throws Exception
+         */
+        private static function normalizePathArray(
+            array $path,
+            bool $allowDotRelative
+        ): array {
+            $parsedPath = [];
+            $hasLeadingTrail = false;
+            $hasLeadingDot = false;
+            foreach ($path as $key => $pathFrag) {
+                switch ($pathFrag) {
+                    case '':
+                        if (!$key) {
+                            $hasLeadingTrail = true;
+                        }
+                        break;
+                    case '.':
+                        if (!$allowDotRelative) {
+                            throw new InvalidArgumentException(
+                                'Dotfile path is not allowed'
+                            );
+                        }
+                        if (!$key) {
+                            $hasLeadingDot = true;
+                        }
+                        break;
+                    case '..':
+                        if (!$allowDotRelative) {
+                            throw new InvalidArgumentException(
+                                'Dotfile path is not allowed'
+                            );
+                        }
+                        if (!$parsedPath) {
+                            throw new Exception(
+                                'Relative path goes above base path'
+                            );
+                        }
+                        array_pop($parsedPath);
+                        break;
+                    default:
+                        $parsedPath[] = $pathFrag;
+                        break;
+                }
+            }
+            if ($hasLeadingTrail) {
+                array_unshift($parsedPath, '');
+            } elseif ($hasLeadingDot) {
+                array_unshift($parsedPath, '.');
+            }
+            // Re-add trailing slash
+            if (
+                $path &&
+                !array_pop($path)
+            ) {
+                $parsedPath[] = '';
+            }
+            return $parsedPath;
+        }
+
+        /**
+         * @throws Exception
+         */
+        public static function normalizePath(
+            string $path,
+            bool $allowDotRelative = false
+        ): string {
+            return implode(
+                '/',
+                self::normalizePathArray(
+                    explode('/', $path),
+                    $allowDotRelative
+                )
+            );
+        }
+
+        /**
+         * @throws Exception
+         */
+        public static function applyRelativePath(
+            string $basePath,
+            string $relPath,
+            bool $allowDotRelative = false
+        ): string {
+            $path = explode('/', $basePath);
+            $relPathFrags = explode('/', $relPath);
+            if (
+                $relPathFrags &&
+                !$relPathFrags[0]
+            ) {
+                throw new InvalidArgumentException(
+                    'relPath is not a relative path'
+                );
+            }
+            $path = array_merge($path, $relPathFrags);
+            return implode(
+                '/',
+                self::normalizePathArray(
+                    $path,
+                    $allowDotRelative
+                )
+            );
         }
     }
