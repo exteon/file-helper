@@ -4,6 +4,7 @@
 
     use DirectoryIterator;
     use Exception;
+    use Exteon\FileHelper\Exception\NotAPrefixException;
     use InvalidArgumentException;
     use RecursiveDirectoryIterator;
     use RecursiveIteratorIterator;
@@ -304,7 +305,7 @@
                 $pathComponentsCount &&
                 !$pathComponentsCount[0]
             ) {
-                throw new Exception(
+                throw new NotAPrefixException(
                     'If path is rooted, basePath must also be rooted'
                 );
             }
