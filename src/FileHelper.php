@@ -294,7 +294,7 @@
                 $commonLength = 0;
                 $commonLength < $pathComponentsCount &&
                 $commonLength < $basePathComponentsCount &&
-                $basePath[$commonLength] === $path[$commonLength];
+                $basePathComponents[$commonLength] === $pathComponents[$commonLength];
                 $commonLength++
             ) {
             }
