@@ -431,4 +431,12 @@
                 )
             );
         }
+
+        public static function isAbsolutePath(string $getPath): bool
+        {
+            return (
+                $getPath &&
+                $getPath[0] === '/'
+            );
+        }
     }
