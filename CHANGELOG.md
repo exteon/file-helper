@@ -1,3 +1,15 @@
+## 1.6.0
+
+#### Bugfixes
+
+* Fix `getRelativePath()`
+
+#### New features
+
+* `FileHelper::getRelativePath()` now throws `NotAPrefixException` when path is
+  not a subpath of base path
+* Introduce `FileHelper::isAbsolutePath()`
+
 ## 1.5.0
 
 * Added `FileHelper::getRelativePath()`
