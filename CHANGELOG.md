@@ -1,3 +1,9 @@
+### 1.6.1
+
+#### Bugfixes
+
+Allow `''` as a relative path in `FileHelper::applyRelativePath()`
+
 ## 1.6.0
 
 #### Bugfixes
