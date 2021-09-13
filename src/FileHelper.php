@@ -415,7 +415,7 @@
             $path = explode('/', $basePath);
             $relPathFrags = explode('/', $relPath);
             if (
-                $relPathFrags &&
+                count($relPathFrags) > 1 &&
                 !$relPathFrags[0]
             ) {
                 throw new InvalidArgumentException(
