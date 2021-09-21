@@ -1,8 +1,15 @@
+### 1.6.2
+
+#### Bugfixes
+
+* postfix `FileHelper::getRelativePath()` now throws `NotAPrefixException` when path is
+  not a subpath of base path
+
 ### 1.6.1
 
 #### Bugfixes
 
-Allow `''` as a relative path in `FileHelper::applyRelativePath()`
+* Allow `''` as a relative path in `FileHelper::applyRelativePath()`
 
 ## 1.6.0
 
