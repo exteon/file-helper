@@ -305,7 +305,7 @@
                 $pathComponentsCount &&
                 !$pathComponentsCount[0]
             ) {
-                throw new NotAPrefixException(
+                throw new Exception(
                     'If path is rooted, basePath must also be rooted'
                 );
             }
@@ -314,7 +314,7 @@
                 !$allowTranscendentPaths &&
                 $commonLength < $basePathComponentsCount
             ) {
-                throw new Exception('Base path is not a prefix of path');
+                throw new NotAPrefixException('Base path is not a prefix of path');
             }
 
             $constructedPath = array_slice($pathComponents, $commonLength);
