@@ -1,3 +1,9 @@
+### 1.6.3
+
+#### Bugfixes
+
+* Relative path computing when base path has trailing `/`
+
 ### 1.6.2
 
 #### Bugfixes
