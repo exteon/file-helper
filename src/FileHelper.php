@@ -287,6 +287,12 @@
                 explode('/', $basePath),
                 true
             );
+            while (
+                count($basePathComponents) > 1 &&
+                end($basePathComponents) === ''
+            ) {
+                array_pop($basePathComponents);
+            }
             $pathComponentsCount = count($pathComponents);
             $basePathComponentsCount = count($basePathComponents);
 
@@ -295,7 +301,8 @@
                 $commonLength = 0;
                 $commonLength < $pathComponentsCount &&
                 $commonLength < $basePathComponentsCount &&
-                $basePathComponents[$commonLength] === $pathComponents[$commonLength];
+                $basePathComponents[$commonLength] ===
+                $pathComponents[$commonLength];
                 $commonLength++
             ) {
             }
@@ -314,7 +321,9 @@
                 !$allowTranscendentPaths &&
                 $commonLength < $basePathComponentsCount
             ) {
-                throw new NotAPrefixException('Base path is not a prefix of path');
+                throw new NotAPrefixException(
+                    'Base path is not a prefix of path'
+                );
             }
 
             $constructedPath = array_slice($pathComponents, $commonLength);
