@@ -310,7 +310,7 @@
             if (
                 !$commonLength &&
                 $pathComponentsCount &&
-                !$pathComponentsCount[0]
+                !$pathComponents[0]
             ) {
                 throw new Exception(
                     'If path is rooted, basePath must also be rooted'
