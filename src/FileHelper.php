@@ -272,6 +272,7 @@
         }
 
         /**
+         * @throws NotAPrefixException
          * @throws Exception
          */
         public static function getRelativePath(
