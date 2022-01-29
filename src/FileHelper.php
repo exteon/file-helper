@@ -5,6 +5,7 @@
     use DirectoryIterator;
     use Exception;
     use Exteon\FileHelper\Exception\NotAPrefixException;
+    use FilesystemIterator;
     use InvalidArgumentException;
     use RecursiveDirectoryIterator;
     use RecursiveIteratorIterator;
@@ -193,12 +194,12 @@
         public static function getDescendants(string $path): array
         {
             $result = [];
-            $iterator = new RecursiveDirectoryIterator($path);
-            foreach (new RecursiveIteratorIterator($iterator) as $ignored) {
-                $result[] = static::getDescendPath(
-                    $path,
-                    $iterator->getSubPath()
-                );
+            $iterator = new RecursiveDirectoryIterator($path, FilesystemIterator::CURRENT_AS_SELF);
+            /** @var RecursiveDirectoryIterator $current */
+            foreach (new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::SELF_FIRST) as $current) {
+                if(!$current->isDot()){
+                    $result[] = $current->getPathName();
+                }
             }
             return $result;
         }
