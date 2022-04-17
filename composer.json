@@ -1,6 +1,6 @@
 {
   "name": "exteon/file-helper",
-  "version": "1.6.3",
+  "version": "1.6.4",
   "description": "Library implementing various common file operations",
   "type": "library",
   "homepage": "https://github.com/exteon/file-helper",

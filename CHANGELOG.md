@@ -1,3 +1,10 @@
+### 1.6.4
+
+#### Bugfixes
+
+* `FileHelper::getRelativePath()` error
+* `FileHelper::getDescendants()`
+
 ### 1.6.3
 
 #### Bugfixes
